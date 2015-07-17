@@ -1,6 +1,7 @@
 # Logs
-logs
-*.log
+#logs
+#*.log
+# This is the standard Node .gitignore file on GitHub, but we actually want logs in here for example purposes.
 
 # Runtime data
 pids
