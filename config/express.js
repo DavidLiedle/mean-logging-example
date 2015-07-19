@@ -3,25 +3,28 @@
 /**
  * Module dependencies.
  */
-var fs = require('fs'),
-	http = require('http'),
-	https = require('https'),
-	express = require('express'),
-	morgan = require('morgan'),
-	bodyParser = require('body-parser'),
-	session = require('express-session'),
-	compress = require('compression'),
+var fs             = require('fs'),
+	http           = require('http'),
+	https          = require('https'),
+	express        = require('express'),
+	morgan         = require('morgan'),  // included by default with MEAN.js
+	winston        = require('winston'), // For Winston examples from the article
+	expressWinston = require('express-winston'),
+	bunyan         = require('bunyan'),  // For Bunyan examples from the article
+	bodyParser     = require('body-parser'),
+	session        = require('express-session'),
+	compress       = require('compression'),
 	methodOverride = require('method-override'),
-	cookieParser = require('cookie-parser'),
-	helmet = require('helmet'),
-	passport = require('passport'),
-	mongoStore = require('connect-mongo')({
+	cookieParser   = require('cookie-parser'),
+	helmet         = require('helmet'),
+	passport       = require('passport'),
+	mongoStore     = require('connect-mongo')({
 		session: session
 	}),
-	flash = require('connect-flash'),
-	config = require('./config'),
-	consolidate = require('consolidate'),
-	path = require('path');
+	flash          = require('connect-flash'),
+	config         = require('./config'),
+	consolidate    = require('consolidate'),
+	path           = require('path');
 
 module.exports = function(db) {
 	// Initialize express app
@@ -110,8 +113,34 @@ module.exports = function(db) {
 	app.use(helmet.ienoopen());
 	app.disable('x-powered-by');
 
+	// Setting up Winston for Express for REQUESTS
+	app.use(expressWinston.logger({
+      transports: [
+        new winston.transports.Console({
+          json: true,
+          colorize: true
+        })
+      ],
+      meta: true, // optional: control whether you want to log the meta data about the request (default to true)
+      msg: "HTTP {{req.method}} {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
+      expressFormat: true, // Use the default Express/morgan request formatting, with the same colors. Enabling this will override any msg and colorStatus if true. Will only output colors on transports with colorize set to true
+      colorStatus: true, // Color the status code, using the Express/morgan color palette (default green, 3XX cyan, 4XX yellow, 5XX red). Will not be recognized if expressFormat is true
+      ignoreRoute: function (req, res) { return false; } // optional: allows to skip some log messages based on request and/or response
+    }));
+
 	// Setting the app router and static folder
 	app.use(express.static(path.resolve('./public')));
+
+	// Setting up Winston for Express for ERRORS
+	app.use( expressWinston.errorLogger( {
+        transports: [
+          new winston.transports.Console({
+            json:     true,
+            colorize: true
+          })
+        ]
+      } )
+    );
 
 	// Globbing routing files
 	config.getGlobbedFiles('./app/routes/**/*.js').forEach(function(routePath) {
