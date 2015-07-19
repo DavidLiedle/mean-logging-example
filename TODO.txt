@@ -1,6 +1,5 @@
 TODO:
 
-- Set up basic MEAN stack
 - Set up logging
 - Enumerate desired errors to show for the article
 - Run the project to generate some errors in the logs
