@@ -3,6 +3,11 @@
 	"description": "Full-Stack JavaScript with MongoDB, Express, AngularJS, and Node.js",
 	"version": "0.0.1",
 	"author": "DavidCanHelp.me",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/macdaddy/mean-logging-example.git"
+	},
+	"license": "MIT",
 	"engines": {
 		"node": "0.10.x",
 		"npm": "1.4.x"
@@ -20,6 +25,9 @@
 		"compression": "~1.2.0",
 		"method-override": "~2.3.0",
 		"morgan": "~1.4.1",
+		"winston": "~1.0.1",
+		"express-winston": "~0.3.1",
+		"bunyan": "~1.4.0",
 		"connect-mongo": "~0.4.1",
 		"connect-flash": "~0.1.1",
 		"helmet": "~0.5.0",
